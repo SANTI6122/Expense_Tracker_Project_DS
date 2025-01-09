@@ -1,0 +1,40 @@
+#All Expenses
+SELECT * FROM expense ORDER BY Date asc;
+
+# Display total spending
+SELECT SUM(round(amount_paid)) AS total_spent FROM expense;
+
+# Display Monthly Spending
+SELECT DATE_FORMAT(date, '%Y-%m') AS month, SUM(round(amount_paid)) AS total_spent FROM expense GROUP BY month ORDER BY month;
+
+#Spending By Category
+SELECT category, SUM(round(amount_paid)) AS total_spent FROM expense GROUP BY category ORDER BY total_spent DESC;
+
+#Spending by Payment Mode
+SELECT payment_mode, SUM(round(amount_paid)) AS total_spent FROM expense GROUP BY payment_mode ORDER BY total_spent DESC;
+
+#Category-Wise cashback
+SELECT category, SUM(cashback) AS total_cashback FROM expense GROUP BY category ORDER BY total_cashback DESC;
+
+#Transaction Per Category
+SELECT category, COUNT(*) AS transaction_count FROM expense GROUP BY category ORDER BY transaction_count DESC;
+
+#Percentage of Spending by Category
+SELECT category, SUM(round(amount_paid)) AS total_spent,round(SUM(round(amount_paid)) / (SELECT SUM(round(amount_paid)) FROM expense) * 100) AS percentage_spent FROM expense GROUP BY category ORDER BY percentage_spent DESC;
+
+#Average Monthly Spending
+SELECT DATE_FORMAT(date, '%Y-%m') AS month, round(AVG(amount_paid)) AS avg_monthly_spent FROM expense GROUP BY month ORDER BY month;
+
+#Spending by Day 
+SELECT DAYNAME(date) AS day_of_week, SUM(round(amount_paid)) AS total_spent FROM expense GROUP BY day_of_week ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+
+#Payment Mode-wise Cashback
+SELECT payment_mode, round(SUM(cashback)) AS total_cashback FROM expense GROUP BY payment_mode ORDER BY total_cashback DESC;
+
+
+#Spending Distribution by range
+SELECT round(SUM(CASE WHEN category = 'Investments' THEN amount_paid ELSE 0 END)) AS total_investments,round(SUM(CASE WHEN category != 'Investments' THEN amount_paid ELSE 0 END)) AS total_other_spent FROM expense;
+
+#Daily Spending Trend
+SELECT date, SUM(amount_paid) AS daily_spent FROM expense GROUP BY date ORDER BY date;
+
